@@ -1,0 +1,38 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.17.0 ()
+  creationTimestamp: null
+  labels:
+    io.kompose.service: restproxy
+  name: restproxy
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: restproxy
+    spec:
+      containers:
+      - env:
+        - name: KAFKA_REST_DEBUG
+          value: "true"
+        - name: KAFKA_REST_HOST_NAME
+          value: restproxy
+        - name: KAFKA_REST_LISTENERS
+          value: http://0.0.0.0:8082
+        - name: KAFKA_REST_SCHEMA_REGISTRY_URL
+          value: http://schemaregistry:8081
+        - name: KAFKA_REST_ZOOKEEPER_CONNECT
+          value: zookeeper:2181
+        image: confluentinc/cp-kafka-rest:5.0.0
+        name: restproxy
+        ports:
+        - containerPort: 8082
+        resources: {}
+      restartPolicy: Always
+status: {}

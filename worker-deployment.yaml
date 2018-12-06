@@ -1,0 +1,40 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.17.0 ()
+  creationTimestamp: null
+  labels:
+    io.kompose.service: worker
+  name: worker
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: worker
+    spec:
+      containers:
+      - args:
+        - bash
+        - -c
+        - sleep infinity
+        env:
+        - name: KAFKA_BOOTSTRAP_SERVERS
+          value: kafka1:9092
+        image: tlberglund/kafka-workshop-worker
+        name: worker
+        resources: {}
+        volumeMounts:
+        - mountPath: /data
+          name: worker-claim0
+      restartPolicy: Always
+      volumes:
+      - name: worker-claim0
+        persistentVolumeClaim:
+          claimName: worker-claim0
+status: {}
